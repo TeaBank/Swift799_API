@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swift799_API.Services.Contracts;
 
 namespace Swift799_API.Controllers
 {
@@ -7,6 +8,12 @@ namespace Swift799_API.Controllers
     [ApiController]
     public class MessagesController : ControllerBase
     {
+        private readonly IMessagesService messagesService;
+        public MessagesController(IMessagesService messagesService)
+        {
+            this.messagesService = messagesService;
+        }
+
         [HttpPost]
         public IActionResult AddMessage()
         {

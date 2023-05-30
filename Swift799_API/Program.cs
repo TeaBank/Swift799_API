@@ -1,6 +1,8 @@
 
 using Swift799_API.Helpers;
 using Swift799_API.Helpers.Contracts;
+using Swift799_API.Services;
+using Swift799_API.Services.Contracts;
 
 namespace Swift799_API
 {
@@ -17,9 +19,11 @@ namespace Swift799_API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //DI for Services
+            //DI for Helpers
             builder.Services.AddScoped<IDatabaseHelper, DatabaseHelper>();
 
+            //DI for Services
+            builder.Services.AddScoped<IMessagesService, MessagesService>();
 
             var app = builder.Build();
 

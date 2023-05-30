@@ -15,8 +15,9 @@ namespace Swift799_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddMessage()
+        public IActionResult AddMessage([FromBody]string message)
         {
+            messagesService.AddMessageToTheDatabase(message);
             return StatusCode(StatusCodes.Status200OK, "Message added successfully to the database!");
         }
     }

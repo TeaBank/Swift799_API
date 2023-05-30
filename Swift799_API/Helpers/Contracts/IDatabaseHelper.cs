@@ -2,6 +2,6 @@
 {
     public interface IDatabaseHelper
     {
-        void RunSQL(string command);
+        Task RunSQLAsync(string command);
     }
 }

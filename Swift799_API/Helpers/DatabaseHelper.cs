@@ -22,13 +22,13 @@ namespace Swift799_API.Helpers
             CreateMessagesTable();
         }
 
-        public void RunSQL(string command)
+        public async Task RunSQLAsync(string command)
         {
             SQLiteCommand commandToRun = new SQLiteCommand(this.dbConnection)
             {
                 CommandText = command
             };
-            commandToRun.ExecuteNonQuery();
+            await commandToRun.ExecuteNonQueryAsync();
         }
 
         private void CreateMessagesTable()
@@ -38,7 +38,7 @@ namespace Swift799_API.Helpers
                             transaction_reference_number VARCHAR2(50) NOT NULL,
                             related_reference VARCHAR2(50),
                             narrative TEXT NOT NULL );";
-            RunSQL(sql);
+            RunSQLAsync(sql).RunSynchronously();
         }
 
     }

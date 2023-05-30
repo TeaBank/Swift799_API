@@ -1,4 +1,7 @@
 
+using Swift799_API.Helpers;
+using Swift799_API.Helpers.Contracts;
+
 namespace Swift799_API
 {
     public class Program
@@ -14,6 +17,10 @@ namespace Swift799_API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //DI for Services
+            builder.Services.AddScoped<IDatabaseHelper, DatabaseHelper>();
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,7 +31,6 @@ namespace Swift799_API
             }
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

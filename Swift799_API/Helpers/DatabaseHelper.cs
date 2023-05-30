@@ -1,36 +1,37 @@
-﻿using System.Data.SQLite;
+﻿using Swift799_API.Helpers.Contracts;
+using System.Data.SQLite;
 
-namespace Swift799_API
+namespace Swift799_API.Helpers
 {
-    public static class DatabaseHelper
+    public class DatabaseHelper : IDatabaseHelper
     {
         private const string databaseFileLocation = @"Data Source=..\..\Files\Swift_Messages.db";
         private const string connectionString = @$"{databaseFileLocation};Version=3";
-        private static readonly SQLiteConnection? dbConnection;
+        private readonly SQLiteConnection? dbConnection;
 
-        static DatabaseHelper()
+        public DatabaseHelper()
         {
             if (!File.Exists(databaseFileLocation))
             {
                 SQLiteConnection.CreateFile(databaseFileLocation);
-
-                dbConnection = new SQLiteConnection(connectionString);
-                dbConnection.Open();
-
-                CreateMessagesTable();
             }
+
+            this.dbConnection = new SQLiteConnection(connectionString);
+            this.dbConnection.Open();
+
+            CreateMessagesTable();
         }
 
-        public static void RunSQL(string command)
+        public void RunSQL(string command)
         {
-            SQLiteCommand commandToRun = new SQLiteCommand(dbConnection)
+            SQLiteCommand commandToRun = new SQLiteCommand(this.dbConnection)
             {
                 CommandText = command
             };
             commandToRun.ExecuteNonQuery();
         }
 
-        private static void CreateMessagesTable()
+        private void CreateMessagesTable()
         {
             string sql = @"CREATE TABLE IF NOT EXISTS Messages (
                             message_id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -5,12 +5,15 @@ namespace Swift799_API.Helpers
 {
     public class DatabaseHelper : IDatabaseHelper
     {
-        private const string databaseFileLocation = @"Files\Swift_Messages.db";
-        private const string connectionString = @$"Datasource={databaseFileLocation};Version=3";
+        private readonly string databaseFileLocation;
+        private readonly string connectionString;
         private readonly SQLiteConnection? dbConnection;
 
-        public DatabaseHelper()
+        public DatabaseHelper(IConfiguration config)
         {
+            this.connectionString = config.GetConnectionString("Database") ?? "";
+            this.databaseFileLocation =  GetDatabaseFileLocation();
+
             if (!File.Exists(databaseFileLocation))
             {
                 SQLiteConnection.CreateFile(databaseFileLocation);
@@ -45,5 +48,12 @@ namespace Swift799_API.Helpers
             RunSQLAsync(sql).GetAwaiter().GetResult();
         }
 
+        private string GetDatabaseFileLocation()
+        {
+            int startIndex = connectionString.IndexOf("=")+1;
+            int endIndex = connectionString.IndexOf(";");
+
+            return connectionString.Substring(startIndex, endIndex-startIndex);
+        }
     }
 }

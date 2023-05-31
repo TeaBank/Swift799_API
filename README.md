@@ -31,5 +31,5 @@ Use this endpoint to add a new message.
 `Serilog` has been used for the logging of data.
 It logs both to the console and in seprate files located in the Swift799_API\Files\logs folder.
 
-##License
+## License
 This project is licensed under the MIT License.

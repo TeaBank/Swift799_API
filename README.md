@@ -33,3 +33,6 @@ It logs both to the console and in seprate files located in the Swift799_API\Fil
 
 ## License
 This project is licensed under the MIT License.
+
+## Contact
+kosio22555@gmail.com

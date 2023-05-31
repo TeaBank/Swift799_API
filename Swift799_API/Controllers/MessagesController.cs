@@ -9,11 +9,10 @@ namespace Swift799_API.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly IMessagesService messagesService;
-        private readonly Serilog.ILogger logger;
-        public MessagesController(IMessagesService messagesService, Serilog.ILogger logger)
+
+        public MessagesController(IMessagesService messagesService)
         {
             this.messagesService = messagesService;
-            this.logger = logger;
         }
 
         [HttpPost]
@@ -22,7 +21,6 @@ namespace Swift799_API.Controllers
         {
             try
             {
-                logger.Information("test");
                 var reader = new StreamReader(Request.Body);
                 var message = await reader.ReadToEndAsync();
 

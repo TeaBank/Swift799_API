@@ -22,6 +22,7 @@ namespace Swift799_API.Controllers
         {
             try
             {
+                logger.Information("test");
                 var reader = new StreamReader(Request.Body);
                 var message = await reader.ReadToEndAsync();
 

@@ -3,6 +3,7 @@ using Swift799_API.Helpers;
 using Swift799_API.Helpers.Contracts;
 using Swift799_API.Services;
 using Swift799_API.Services.Contracts;
+using Swift799_API.SwaggerFilters;
 
 namespace Swift799_API
 {
@@ -17,7 +18,7 @@ namespace Swift799_API
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options => options.OperationFilter<AddMessageFilter>());
 
             //DI for Helpers
             builder.Services.AddScoped<IDatabaseHelper, DatabaseHelper>();
@@ -32,6 +33,7 @@ namespace Swift799_API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
             }
 
             app.UseAuthorization();

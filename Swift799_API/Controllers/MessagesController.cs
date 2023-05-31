@@ -15,10 +15,16 @@ namespace Swift799_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddMessage([FromBody]string message)
+        [Consumes("text/plain")]
+        public async Task<IActionResult> AddMessage()
         {
-            messagesService.AddMessageToTheDatabase(message);
+            var reader = new StreamReader(Request.Body);
+            var message = await reader.ReadToEndAsync();
+
+            await messagesService.AddMessageToTheDatabaseAsync(message);
             return StatusCode(StatusCodes.Status200OK, "Message added successfully to the database!");
+           
         }
+
     }
 }

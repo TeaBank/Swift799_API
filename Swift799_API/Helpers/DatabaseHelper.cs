@@ -5,8 +5,8 @@ namespace Swift799_API.Helpers
 {
     public class DatabaseHelper : IDatabaseHelper
     {
-        private const string databaseFileLocation = @"Data Source=..\..\Files\Swift_Messages.db";
-        private const string connectionString = @$"{databaseFileLocation};Version=3";
+        private const string databaseFileLocation = @"Files\Swift_Messages.db";
+        private const string connectionString = @$"Datasource={databaseFileLocation};Version=3";
         private readonly SQLiteConnection? dbConnection;
 
         public DatabaseHelper()
@@ -14,12 +14,16 @@ namespace Swift799_API.Helpers
             if (!File.Exists(databaseFileLocation))
             {
                 SQLiteConnection.CreateFile(databaseFileLocation);
+                this.dbConnection = new SQLiteConnection(connectionString);
+                this.dbConnection.Open();
+                CreateMessagesTable();
+            }
+            else
+            {
+                this.dbConnection = new SQLiteConnection(connectionString);
+                this.dbConnection.Open();
             }
 
-            this.dbConnection = new SQLiteConnection(connectionString);
-            this.dbConnection.Open();
-
-            CreateMessagesTable();
         }
 
         public async Task RunSQLAsync(string command)
@@ -38,7 +42,7 @@ namespace Swift799_API.Helpers
                             transaction_reference_number VARCHAR2(50) NOT NULL,
                             related_reference VARCHAR2(50),
                             narrative TEXT NOT NULL );";
-            RunSQLAsync(sql).RunSynchronously();
+            RunSQLAsync(sql).GetAwaiter().GetResult();
         }
 
     }

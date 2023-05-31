@@ -22,7 +22,11 @@ Use this endpoint to add a new message.
 |------------ |-------------------------------|--------------------|------------|
 |        1    |       67-C111111-KNTRL        |   30-111-1111111   |  SOME TEXT |
 
--   message_id: INT, PK, AUTO INCREMENT
--   transaction_reference_number: VARCHAR2(50) NOT NULL
--   related_reference: VARCHAR2(50)
--   narrative: TEXT NOT NULL
+-   `message_id`: INT, PK, AUTO INCREMENT
+-   `transaction_reference_number`: VARCHAR2(50) NOT NULL
+-   `related_reference`: VARCHAR2(50)
+-   `narrative`: TEXT NOT NULL
+
+## Logging
+`Serilog` has been used for the logging of data.
+It logs both to the console and in seprate files located in the Swift799_API\Files\logs folder.

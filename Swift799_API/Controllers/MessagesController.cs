@@ -18,12 +18,18 @@ namespace Swift799_API.Controllers
         [Consumes("text/plain")]
         public async Task<IActionResult> AddMessage()
         {
-            var reader = new StreamReader(Request.Body);
-            var message = await reader.ReadToEndAsync();
+            try
+            {
+                var reader = new StreamReader(Request.Body);
+                var message = await reader.ReadToEndAsync();
 
-            await messagesService.AddMessageToTheDatabaseAsync(message);
-            return StatusCode(StatusCodes.Status200OK, "Message added successfully to the database!");
-           
+                await messagesService.AddMessageToTheDatabaseAsync(message);
+                return StatusCode(StatusCodes.Status200OK, "Message added successfully to the database!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
+            }
         }
 
     }

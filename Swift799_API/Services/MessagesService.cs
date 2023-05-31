@@ -22,11 +22,11 @@ namespace Swift799_API.Services
             foreach (var keyValuePair in fields)
             {
                 columnNames += $"{TranslateFieldIDToColumnName(keyValuePair.Key)},";
-                columnValues += $"\"{keyValuePair.Value}\",";
+                columnValues += @$"""{keyValuePair.Value}"",";
             }
 
-            columnNames.Remove(columnNames.Length - 1); // Removes the last ','
-            columnValues.Remove(columnValues.Length - 1);
+            columnNames = columnNames.Remove(columnNames.Length - 1); // Removes the last ','
+            columnValues = columnValues.Remove(columnValues.Length - 1);
 
             string sqlInsertCommand = $"INSERT INTO Messages ({columnNames}) VALUES ({columnValues})";
             await this.dbHelper.RunSQLAsync(sqlInsertCommand);

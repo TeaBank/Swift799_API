@@ -4,14 +4,16 @@ using Swift799_API.Services.Contracts;
 
 namespace Swift799_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/messages")]
     [ApiController]
     public class MessagesController : ControllerBase
     {
         private readonly IMessagesService messagesService;
-        public MessagesController(IMessagesService messagesService)
+        private readonly Serilog.ILogger logger;
+        public MessagesController(IMessagesService messagesService, Serilog.ILogger logger)
         {
             this.messagesService = messagesService;
+            this.logger = logger;
         }
 
         [HttpPost]

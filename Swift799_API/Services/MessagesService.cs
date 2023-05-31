@@ -8,9 +8,11 @@ namespace Swift799_API.Services
     public class MessagesService : IMessagesService
     {
         private readonly IDatabaseHelper dbHelper;
-        public MessagesService(IDatabaseHelper dbHelper)
+        private readonly Serilog.ILogger logger;
+        public MessagesService(IDatabaseHelper dbHelper, Serilog.ILogger logger)
         {
             this.dbHelper = dbHelper;
+            this.logger = logger;
         }
 
         public async Task AddMessageToTheDatabaseAsync(string text)
@@ -29,7 +31,22 @@ namespace Swift799_API.Services
             columnValues = columnValues.Remove(columnValues.Length - 1);
 
             string sqlInsertCommand = $"INSERT INTO Messages ({columnNames}) VALUES ({columnValues})";
-            await this.dbHelper.RunSQLAsync(sqlInsertCommand);
+
+            logger.Information("Trying to run the following SQL command: {@command} {@TimeStamp}",
+                sqlInsertCommand,
+                DateTime.UtcNow);
+            try
+            {
+                await this.dbHelper.RunSQLAsync(sqlInsertCommand);
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Failed to run the last SQL command. {@exception} {@TimeStamp}",
+                    ex.Message,
+                    DateTime.UtcNow);
+
+                throw;
+            }
             return;
         }
 
@@ -51,7 +68,7 @@ namespace Swift799_API.Services
                 {
                     textTemp += currentChar;
 
-                    if(i == message.Length - 1) // wihtout this check the last field's content would never get added to the list
+                    if (i == message.Length - 1) // wihtout this check the last field's content would never get added to the list
                     {
                         fieldContents.Add(textTemp);
                     }
@@ -80,27 +97,41 @@ namespace Swift799_API.Services
             return result;
         }
 
-        private static string GetBlock4Text(string wholeMessage)
+        private string GetBlock4Text(string message)
         {
-            int startIndexOfBlock4 = wholeMessage.IndexOf("{4:") + 3;
+            logger.Information("Recieved message for processing : {@message} {@TimeStamp}",
+                message,
+                DateTime.UtcNow);
 
-            int startIndex = wholeMessage.Substring(startIndexOfBlock4).IndexOf(':') + startIndexOfBlock4 + 1; //starting index of the first field (:20:)
-            int endIndex = wholeMessage.Substring(startIndex).IndexOf('}'); //ending index of the whole narrative
+            string recievedMessage = message;
+
+            int startIndexOfBlock4 = message.IndexOf("{4:") + 3;
+
+            int startIndex = message.Substring(startIndexOfBlock4).IndexOf(':') + startIndexOfBlock4 + 1; //starting index of the first field (:20:)
+            int endIndex = message.Substring(startIndex).IndexOf('}'); //ending index of the whole narrative
 
             try
             {
-                wholeMessage = wholeMessage.Substring(startIndex, endIndex);
+                message = message.Substring(startIndex, endIndex);
             }
             catch
             {
+                logger.Error("Failed to separet block 4 of the recieved message. {@TimeStamp}", DateTime.UtcNow);
+
                 throw new InvalidDataException("The message isn't formated correctly. Was looking for a SWIFT MT799 message.");
             }
 
-            return wholeMessage;
+            logger.Information("Block 4 of the recieved message was seprated successfully. {@TimeStamp}", DateTime.UtcNow);
+
+            return message;
         }
 
         private string TranslateFieldIDToColumnName(int id)
         {
+            logger.Information("Translating field id: {@id} {@TimeStamp}",
+                id,
+                DateTime.UtcNow);
+
             switch (id)
             {
                 case 20:
@@ -110,6 +141,10 @@ namespace Swift799_API.Services
                 case 79:
                     return "narrative";
                 default:
+                    logger.Error("Failed to transalte id: {@id} {@TimeStamp}",
+                        id,
+                        DateTime.UtcNow);
+
                     throw new InvalidDataException($"The field ID {id} is uknown");
             }
         }

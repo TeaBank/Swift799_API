@@ -1,4 +1,5 @@
 
+using Serilog;
 using Swift799_API.Helpers;
 using Swift799_API.Helpers.Contracts;
 using Swift799_API.Services;
@@ -26,15 +27,21 @@ namespace Swift799_API
             //DI for Services
             builder.Services.AddScoped<IMessagesService, MessagesService>();
 
+            //Setup Serilog
+            builder.Host.UseSerilog((context, configuration) =>
+                configuration.ReadFrom.Configuration(context.Configuration));
+
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-
             }
+
+            app.UseSerilogRequestLogging();
 
             app.UseAuthorization();
 
